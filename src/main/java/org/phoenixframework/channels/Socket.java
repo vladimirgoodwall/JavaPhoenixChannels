@@ -33,6 +33,7 @@ public class Socket {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final OkHttpClient httpClient = new OkHttpClient();
+    private HashMap<String, String> headers;
     private WebSocket webSocket = null;
 
     private String endpointUri = null;
@@ -199,8 +200,18 @@ public class Socket {
         }
     }
 
+    public Socket(final String endpointUri, HashMap<String, String> headers) throws IOException {
+        this(endpointUri);
+        this.headers = headers;
+    }
+
     public Socket(final String endpointUri) throws IOException {
         this(endpointUri, DEFAULT_HEARTBEAT_INTERVAL);
+    }
+
+    public Socket(final String endpointUri, final int heartbeatIntervalInMs, HashMap<String, String> headers) throws IOException {
+        this(endpointUri, heartbeatIntervalInMs);
+        this.headers = headers;
     }
 
     public Socket(final String endpointUri, final int heartbeatIntervalInMs) throws IOException {
@@ -224,7 +235,13 @@ public class Socket {
         disconnect();
         // No support for ws:// or ws:// in okhttp. See https://github.com/square/okhttp/issues/1652
         final String httpUrl = this.endpointUri.replaceFirst("^ws:", "http:").replaceFirst("^wss:", "https:");
-        final Request request = new Request.Builder().url(httpUrl).build();
+        Request.Builder builder = new Request.Builder();
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        final Request request = builder.url(httpUrl).build();
         final WebSocketCall wsCall = WebSocketCall.create(httpClient, request);
         wsCall.enqueue(wsListener);
     }
