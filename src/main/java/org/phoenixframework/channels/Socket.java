@@ -33,7 +33,7 @@ public class Socket {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final OkHttpClient httpClient = new OkHttpClient();
-    private HashMap<String, String> headers;
+    private Map<String, String> headers;
     private WebSocket webSocket = null;
 
     private String endpointUri = null;
@@ -200,7 +200,7 @@ public class Socket {
         }
     }
 
-    public Socket(final String endpointUri, HashMap<String, String> headers) throws IOException {
+    public Socket(final String endpointUri, Map<String, String> headers) throws IOException {
         this(endpointUri);
         this.headers = headers;
     }
@@ -209,7 +209,7 @@ public class Socket {
         this(endpointUri, DEFAULT_HEARTBEAT_INTERVAL);
     }
 
-    public Socket(final String endpointUri, final int heartbeatIntervalInMs, HashMap<String, String> headers) throws IOException {
+    public Socket(final String endpointUri, final int heartbeatIntervalInMs, Map<String, String> headers) throws IOException {
         this(endpointUri, heartbeatIntervalInMs);
         this.headers = headers;
     }
