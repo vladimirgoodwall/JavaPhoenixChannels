@@ -142,7 +142,10 @@ public class Socket {
                 }
                 if (reconnectOnFailure) {
                     scheduleReconnectTimer();
+                } else {
+                    cancelReconnectTimer();
                 }
+                cancelHeartbeatTimer();
             }
         }
     }
