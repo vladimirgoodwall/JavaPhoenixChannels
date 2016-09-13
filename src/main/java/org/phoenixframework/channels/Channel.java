@@ -268,5 +268,11 @@ public class Channel {
         scheduleRepeatingTask(rejoinTimerTask, Socket.RECONNECT_INTERVAL_MS);
     }
 
+    public void cancel() {
+        if (channelTimer != null) {
+            channelTimer.cancel();
+        }
+    }
+
 
 }
