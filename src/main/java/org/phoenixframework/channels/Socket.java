@@ -144,8 +144,8 @@ public class Socket {
                     scheduleReconnectTimer();
                 } else {
                     cancelReconnectTimer();
+                    cancelHeartbeatTimer();
                 }
-                cancelHeartbeatTimer();
             }
         }
     }
