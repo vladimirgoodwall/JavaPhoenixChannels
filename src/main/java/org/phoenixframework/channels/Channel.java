@@ -231,12 +231,16 @@ public class Channel {
         return socket;
     }
 
-    public void scheduleRepeatingTask(TimerTask timerTask, long ms) {
-        this.channelTimer.schedule(timerTask, ms, ms);
+    public synchronized void scheduleRepeatingTask(TimerTask timerTask, long ms) {
+        if (this.channelTimer != null) {
+            this.channelTimer.schedule(timerTask, ms, ms);
+        }
     }
 
-    public void scheduleTask(TimerTask timerTask, long ms) {
-        this.channelTimer.schedule(timerTask, ms);
+    public synchronized void scheduleTask(TimerTask timerTask, long ms) {
+        if (this.channelTimer != null) {
+            this.channelTimer.schedule(timerTask, ms);
+        }
     }
 
 
@@ -268,10 +272,11 @@ public class Channel {
         scheduleRepeatingTask(rejoinTimerTask, Socket.RECONNECT_INTERVAL_MS);
     }
 
-    public void cancel() {
+    public synchronized void finishTimers() {
         if (channelTimer != null) {
             channelTimer.cancel();
         }
+        channelTimer = null;
     }
 
 
