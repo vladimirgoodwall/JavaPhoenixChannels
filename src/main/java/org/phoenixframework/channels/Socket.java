@@ -85,7 +85,7 @@ public class Socket {
                 if (payload.contentType() == WebSocket.TEXT) {
                     final Envelope envelope =
                         objectMapper.readValue(payload.byteStream(), Envelope.class);
-                    for (final Channel channel : channels) {
+                    for (final Channel channel : getChannels()) {
                         if (channel.isMember(envelope.getTopic())) {
                             channel.trigger(envelope.getEvent(), envelope);
                         }
@@ -147,6 +147,12 @@ public class Socket {
                     cancelHeartbeatTimer();
                 }
             }
+        }
+    }
+
+    private List<Channel> getChannels() {
+        synchronized (channels) {
+            return new ArrayList<>(channels);
         }
     }
 
@@ -394,7 +400,7 @@ public class Socket {
     }
 
     private void triggerChannelError() {
-        for (final Channel channel : channels) {
+        for (final Channel channel : getChannels()) {
             channel.trigger(ChannelEvent.ERROR.getPhxEvent(), null);
         }
     }
